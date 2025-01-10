@@ -1,0 +1,34 @@
+{
+    "manifest_version": 3,
+    "name": "Verifiable screenshots",
+    "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4q57ZBoHExi1UceY1mnpekcpVRLyWK04XLq1GtOD2LWaN0PJq79oWf9lrzfVtyDn9ixDg/eWIl+UxOh7ZNOqvSGslg7oB1lCjpncLPsXdQKf5QQUG4c+eNEL/Y2k00UM3AEma04sik0IPd3XqPHpNeYDOvFpRYrGqxuDGZL+fMcOmIBMJIpHB3MH+oDd4kMF+W20AA4Ixy/iOD2cU0svpYSwSvgOg8jZChyJ+q2+05u+bGREkUbqvuMw6HWqbRhBent7Ndle4GrBY9l2TIGox6A61QdPzQsEOKXcYT5Gf349wqZA6xoDgQxRnswghF/MWvoQU4OJ/4PL7ZGBMIRd+wIDAQAB",
+    "description": "Take screenshots that can be cryptographically verified",
+    "version": "0.0.1",
+    "icons": {},
+    "background": {
+        "service_worker": "service-worker.js",
+        "type": "module"
+    },
+    "oauth2": {
+        "client_id": "344413968647-31l50a3vmasmh1p59rps3fjv2o3ncrae.apps.googleusercontent.com",
+        "scopes": [
+            "https://www.googleapis.com/auth/userinfo.email"
+        ]
+    },
+    "action": {
+        "default_popup": "popup.html"
+    },
+    "commands": {
+        "screenshot": {
+            "suggested_key": {
+                "default": "Ctrl+Shift+6",
+                "mac": "Command+Shift+6"
+            },
+            "description": "Take verifiable screenshot"
+        }
+    },
+    "permissions": [
+        "activeTab",
+        "identity"
+    ]
+}
