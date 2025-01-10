@@ -14,7 +14,7 @@ So far this extension:
 1. does Google OAuth to get an id token
 1. signs the token's `sub` with the private key
 1. posts the public key, token and signed `token.sub` to Fulcio
-1. 💥 fails because Fulcio doesn't support CORS requests
+1. 💥 fails with `"There was an error processing the identity token"` presumably because the id token doesn't have audience of `sigstore` -- but setting `audience` in the oauth request gets blocked by Google...
 
 Once I get past that I think the next step is to:
 

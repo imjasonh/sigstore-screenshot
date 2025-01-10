@@ -15,6 +15,9 @@
             "https://www.googleapis.com/auth/userinfo.email"
         ]
     },
+    "host_permissions": [
+        "https://fulcio.sigstore.dev/api/v2/signingCert"
+    ],
     "action": {
         "default_popup": "popup.html"
     },

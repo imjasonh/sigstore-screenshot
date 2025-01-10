@@ -57,7 +57,7 @@ function useSignature(key, token, signature) {
             publicKeyRequest: {
                 publicKey: {
                     algorithm: "RSASSA-PKCS1-v1_5",
-                    content: key.publicKey
+                    content: base64(new TextEncoder().encode(key.publicKey)),
                 },
                 proofOfPossession: base64(signature),
             }
@@ -67,7 +67,7 @@ function useSignature(key, token, signature) {
 
 function useResponse(resp) {
     console.log("resp", resp);
-    console.log("resp", resp.json());
+    console.log("resp", resp.json().then(console.log).catch(console.error));
 }
 
 function capture(tab) {
