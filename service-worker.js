@@ -8,9 +8,7 @@ function parseJwt(token) {
     return JSON.parse(jsonPayload);
 }
 
-function base64(arrayBuffer) {
-    return btoa(String.fromCharCode.apply(null, new Uint8Array(arrayBuffer)));
-}
+function base64(arrayBuffer) { return btoa(String.fromCharCode.apply(null, new Uint8Array(arrayBuffer))); }
 
 function useKey(key) {
     console.log("pub", key.publicKey);
@@ -19,36 +17,22 @@ function useKey(key) {
     var manifest = chrome.runtime.getManifest();
     var clientId = encodeURIComponent(manifest.oauth2.client_id);
     var scopes = encodeURIComponent(manifest.oauth2.scopes.join(' '));
-    var redirectUri = encodeURIComponent('https://' + chrome.runtime.id + '.chromiumapp.org');
-
-    var url = 'https://accounts.google.com/o/oauth2/auth' +
-        '?client_id=' + clientId +
-        '&response_type=id_token' +
-        '&access_type=offline' +
-        '&redirect_uri=' + redirectUri +
-        '&scope=' + scopes;
+    var redirectUri = encodeURIComponent(`https://${chrome.runtime.id}.chromiumapp.org`);
 
     chrome.identity.launchWebAuthFlow({
-        'url': url,
-        'interactive': true
+        url: `https://accounts.google.com/o/oauth2/auth?client_id=${clientId}&response_type=id_token&access_type=offline&redirect_uri=${redirectUri}&scope=${scopes}`,
+        interactive: true
     }, function (redirectedTo) {
         if (chrome.runtime.lastError) {
-            // Example: Authorization page could not be loaded.
             console.error(chrome.runtime.lastError.message);
         }
         else {
+            // Example: id_token=<YOUR_BELOVED_ID_TOKEN>&authuser=0&hd=<SOME.DOMAIN.PL>&session_state=<SESSION_STATE>&prompt=<PROMPT>
             var response = redirectedTo.split('#', 2)[1];
-
-            // Example: id_token=<YOUR_BELOVED_ID_TOKEN>&authuser=0&hd=<SOME.DOMAIN.PL>&session_state=<SESSION_SATE>&prompt=<PROMPT>
-            console.log(response);
-
-            // Get id_token
             var idToken = response.split('&', 1)[0].split('=', 2)[1];
-            console.log(idToken);
             useToken(key, idToken);
         }
-    }
-    );
+    });
 }
 
 function useToken(key, token) {
@@ -65,22 +49,20 @@ function useSignature(key, token, signature) {
     console.log("signature", signature);
     console.log("signature b64", base64(signature));
 
-    fetch("https://fulcio.sigstore.dev/v2/signingCert", {
+    fetch("https://fulcio.sigstore.dev/api/v2/signingCert", {
         method: "POST",
-        headers: {
-            "Authorization": `Bearer ${token}`,
-        },
+        headers: { "Authorization": `Bearer ${token}` },
         body: JSON.stringify({
-            credentials: { oidc_identity_token: token },
-            key: {
-                public_key: {
+            credentials: { oidcIdentityToken: token },
+            publicKeyRequest: {
+                publicKey: {
                     algorithm: "RSASSA-PKCS1-v1_5",
                     content: key.publicKey
                 },
-                proof_of_possession: base64(signature),
+                proofOfPossession: base64(signature),
             }
         }),
-    }).then(useResponse).catch(console.error);
+    }).then(useResponse).catch(console.error); // TODO: This fails due to CORS
 }
 
 function useResponse(resp) {
@@ -93,9 +75,9 @@ function capture(tab) {
 
     crypto.subtle.generateKey({
         name: "RSASSA-PKCS1-v1_5",
-        modulusLength: 2048, //can be 1024, 2048, or 4096
+        modulusLength: 2048,
         publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
-        hash: { name: "SHA-256" }, //can be "SHA-1", "SHA-256", "SHA-384", or "SHA-512"
+        hash: { name: "SHA-256" },
     }, false, ["sign", "verify"]).then(useKey).catch(console.error);
 }
 
