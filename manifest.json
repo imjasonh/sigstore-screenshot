@@ -9,12 +9,6 @@
         "service_worker": "service-worker.js",
         "type": "module"
     },
-    "oauth2": {
-        "client_id": "344413968647-31l50a3vmasmh1p59rps3fjv2o3ncrae.apps.googleusercontent.com",
-        "scopes": [
-            "https://www.googleapis.com/auth/userinfo.email"
-        ]
-    },
     "host_permissions": [
         "https://fulcio.sigstore.dev/api/v2/signingCert"
     ],
@@ -32,6 +26,7 @@
     },
     "permissions": [
         "activeTab",
-        "identity"
+        "identity",
+        "identity.email"
     ]
 }
